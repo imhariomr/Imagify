@@ -1,10 +1,13 @@
 import React, { useContext } from 'react'
 import { assets, plans } from '../assets/assets'
 import { AppContext } from '../context/AppContext';
+import { Navigate, useNavigate } from 'react-router-dom';
+import Purchase from './Purchase';
 
 const BuyCredit = () => {
 
   const {user,setUser} = useContext(AppContext);
+  const Navigate = useNavigate();
 
   return (
     <div className='min-h-[80vh] text-center pt-14 mb-10'>
@@ -20,7 +23,7 @@ const BuyCredit = () => {
             <p className='mt-6'>
               <span className='text-3xl font-medium'>${item.price}</span>/ {item.credits} credits</p>
 
-            <button className='w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52'>{user ? 'Purchase' : 'Get Started'}</button>
+            <button className='w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52' onClick={()=>Navigate('/purchase')}>{user ? 'Purchase' : 'Get Started'}</button>
           </div>
         ))}
       </div>

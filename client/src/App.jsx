@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import { AppContext } from "./context/AppContext";
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import Purchase from "./pages/Purchase";
 
 export default function App() {
 
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/result" element={<Result />} />
           <Route path="/buy" element={<BuyCredit />} />
+          <Route path="/purchase" element={<Purchase />} />
         </Routes>
         <Footer/>
       </div>
