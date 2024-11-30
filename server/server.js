@@ -6,17 +6,21 @@ const port = process.env.PORT || 4000;
 const connectDB = require('./config/mongodb');
 const {userRouter} = require('./routes/userRoute');
 const {imageRouter} = require('./routes/imageRoute');
-// const allowedOrigins = ['https://imagify-frontend-vily.onrender.com'];
+const corsOptions = {
+    origin: 'https://imagify-frontend-vily.onrender.com', // Replace with the actual frontend URL
+    allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Allow 'token' header
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow necessary HTTP methods
+    credentials: true, // Enable credentials if you're sending cookies or other credentials
+    preflightContinue: false,
+    optionsSuccessStatus: 200, // Ensures the preflight request gets the correct status code
+};
 
+app.use(cors(corsOptions));
+
+
+// app.use(cors());
 
 dotenv.config();
-// app.use(cors());
-app.use(cors({
-    origin: '*',  // Allows only requests from this domain
-    methods: 'GET, POST, PUT, DELETE',  // Allows these HTTP methods
-    allowedHeaders: 'Content-Type, Authorization',  // Allows these headers
-  }));
-  app.options('*', cors());  // Handles preflight requests
 
 app.use(express.json());
 
