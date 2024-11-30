@@ -6,13 +6,13 @@ const port = process.env.PORT || 4000;
 const connectDB = require('./config/mongodb');
 const {userRouter} = require('./routes/userRoute');
 const {imageRouter} = require('./routes/imageRoute');
-const allowedOrigins = ['https://imagify-frontend-vily.onrender.com'];
+// const allowedOrigins = ['https://imagify-frontend-vily.onrender.com'];
 
 
 dotenv.config();
-// app.use(cors({ origin: '*' }));
+// app.use(cors());
 app.use(cors({
-    origin: allowedOrigins,  // Allows only requests from this domain
+    origin: '*',  // Allows only requests from this domain
     methods: 'GET, POST, PUT, DELETE',  // Allows these HTTP methods
     allowedHeaders: 'Content-Type, Authorization',  // Allows these headers
   }));
