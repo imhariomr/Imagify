@@ -27,14 +27,14 @@ const Login = () => {
                 response = await axios.post(backendUrl+'/api/v1/user/register',{name,email,password})
             }
 
-            if(response.data.success){
+            if(response.success){
                 setToken(response.data.token);
                 setUser(response.data.name);
                 localStorage.setItem('token',response.data.token)
                 setShowLogin(false);
                 toast.success(`${state} successful!`);
             }else{
-                toast.error("User Already Exist")
+                toast.error(response.data.msg)
             }
         }catch(e){
             toast.error('An error occurred. Please try again.');

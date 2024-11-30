@@ -24,7 +24,7 @@ const registerUser = async(req,res)=>{
         res.json({success:true,token,name:user.name});
     }catch(error){
         console.log(error);
-        res.json({success:false,message:error.message})
+        res.json({success:false,msg:error.message})
     }
 }
 
@@ -48,7 +48,7 @@ const loginUser = async(req,res)=>{
 
     }catch(error){
         console.log(error);
-        res.json({success:false,message:error.message})
+        res.json({success:false,msg:error.message})
     }
 }
 
@@ -57,12 +57,10 @@ const userCredits = async(req,res)=>{
     try{
         const {userId} = req.body
         const user = await userModel.findById(userId);
-
         res.json({success:true, credits:user.creditBalance,name:user.name});
     }catch(error){
         console.log(error);
-        res.json({success:false,message:error.message})
+        res.json({success:false,msg:error.message})
     }
 }
-
 module.exports = {registerUser,loginUser,userCredits};
