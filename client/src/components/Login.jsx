@@ -27,7 +27,7 @@ const Login = () => {
                 response = await axios.post(backendUrl+'/api/v1/user/register',{name,email,password})
             }
 
-            if(response.success){
+            if(response.data.success){
                 setToken(response.data.token);
                 setUser(response.data.name);
                 localStorage.setItem('token',response.data.token)
