@@ -1,97 +1,142 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { assets } from '../assets/assets'
+import React, { useContext, useEffect, useState } from 'react';
+import { assets } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
-import axios from 'axios'
+import axios from 'axios';
 import { toast } from 'react-toastify';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-
     const [state, setState] = useState('Sign up');
-    const {showLogin,setShowLogin,backendUrl,setToken,setUser} = useContext(AppContext);
-
+    const { showLogin, setShowLogin, backendUrl, setToken, setUser } = useContext(AppContext);
+    const [loading, setLoading] = useState(false); // Loading state
     const navigate = useNavigate();
 
-    const [name,setName] = useState("");
-    const [email,setEmail] = useState("");
-    const [password,setPassword] = useState("");
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const onSubmitHandler = async(e)=>{
+    const onSubmitHandler = async (e) => {
         e.preventDefault();
-        try{
-
+        setLoading(true); // Set loading to true on form submission
+        try {
             let response;
-            if(state ==='Login'){
-                response = await axios.post(backendUrl + '/api/v1/user/login',{email,password})
-            }else{
-                response = await axios.post(backendUrl+'/api/v1/user/register',{name,email,password})
+            if (state === 'Login') {
+                response = await axios.post(backendUrl + '/api/v1/user/login', { email, password });
+            } else {
+                response = await axios.post(backendUrl + '/api/v1/user/register', { name, email, password });
             }
 
-            if(response.data.success){
+            if (response.data.success) {
                 setToken(response.data.token);
                 setUser(response.data.name);
-                localStorage.setItem('token',response.data.token)
+                localStorage.setItem('token', response.data.token);
                 setShowLogin(false);
                 toast.success(`${state} successful!`);
-            }else{
-                toast.error(response.data.msg)
+            } else {
+                toast.error(response.data.msg);
             }
-        }catch(e){
+        } catch (e) {
             toast.error('An error occurred. Please try again.');
+        } finally {
+            setLoading(false); // Reset loading state
         }
-    }
+    };
 
-    useEffect(()=>{
+    useEffect(() => {
         document.body.style.overflow = 'hidden';
-        return()=>{
+        return () => {
             document.body.style.overflow = 'unset';
-        }
-    },[])
+        };
+    }, []);
 
-  return (
-    <div className='fixed top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center'>
+    return (
+        <div className="fixed top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center">
+            <form onSubmit={onSubmitHandler} className="relative bg-white p-10 rounded-xl text-slate-500">
+                <h1 className="text-center text-2xl text-neutral-700 font-medium">{state}</h1>
+                <p className="text-sm">Welcome back! Please sign in to continue</p>
 
-        <form onSubmit={onSubmitHandler} className='relative bg-white p-10 rounded-xl text-slate-500' >
-            <h1 className='text-center text-2xl text-neutral-700 font-medium'>{state}</h1>
-            <p className='text-sm'>Welcome back! Please sign in to continue</p>
+                {state !== 'Login' && (
+                    <div className="border px-5 py-2 flex items-center gap-2 rounded-full mt-5">
+                        <img src={assets.profile_icon} alt="" className="h-6" />
+                        <input
+                            onChange={(e) => setName(e.target.value)}
+                            value={name}
+                            className="outline-none text-sm"
+                            type="text"
+                            placeholder="Full Name"
+                            required
+                        />
+                    </div>
+                )}
 
-            {state !== 'Login' && <div className='border px-5 py-2 flex items-center gap-2 rounded-full mt-5'>
-                <img src={assets.profile_icon} alt="" className='h-6'/>
-                <input onChange={(e)=>setName(e.target.value)} value={name} className='outline-none text-sm' type="text" placeholder='Full Name' required/>
+                <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-3">
+                    <img src={assets.email_icon} alt="" />
+                    <input
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                        className="outline-none text-sm"
+                        type="text"
+                        placeholder="Email id"
+                        required
+                    />
+                </div>
 
-            </div>}
+                <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-3">
+                    <img src={assets.lock_icon} alt="" />
+                    <input
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                        className="outline-none text-sm"
+                        type="password"
+                        placeholder="Password"
+                        required
+                    />
+                </div>
 
-            <div className='border px-6 py-2 flex items-center gap-2 rounded-full mt-3'>
-                <img src={assets.email_icon} alt=""/>
-                <input onChange={(e)=>setEmail(e.target.value)} value = {email} className='outline-none text-sm' type="text" placeholder='Email id' required/>
+                <p
+                    className="text-sm text-blue-600 my-4 cursor-pointer"
+                    onClick={() => {
+                        navigate('/purchase');
+                        setShowLogin(false);
+                    }}
+                >
+                    Forgot Password
+                </p>
 
-            </div>
+                <button
+                    className="bg-blue-600 w-full text-white py-2 rounded-full"
+                    disabled={loading} // Disable the button when loading
+                >
+                    {loading ? 'Please wait...' : state === 'Login' ? 'Login' : 'Create account'}
+                </button>
 
-            <div className='border px-6 py-2 flex items-center gap-2 rounded-full mt-3'>
-                <img src={assets.lock_icon} alt=""/>
-                <input onChange={(e)=>setPassword(e.target.value)} value={password} className='outline-none text-sm' type="password" placeholder='Password' required/>
-            </div>
+                {state === 'Login' ? (
+                    <p className="mt-5 text-center">
+                        Don't have an account?{' '}
+                        <span className="text-blue-600 cursor-pointer" onClick={() => setState('Signup')}>
+                            Sign up
+                        </span>
+                    </p>
+                ) : (
+                    <p className="mt-5 text-center">
+                        Already have an account?{' '}
+                        <span className="text-blue-600 cursor-pointer" onClick={() => setState('Login')}>
+                            Login
+                        </span>
+                    </p>
+                )}
 
-            <p className='text-sm text-blue-600 my-4 cursor-pointer' onClick={()=>{
-                navigate('/purchase')
-                setShowLogin(false)
-            }}>Forgot Password</p>
+                <img
+                    src={assets.cross_icon}
+                    alt=""
+                    className="absolute top-5 right-5 cursor-pointer"
+                    onClick={() => {
+                        setShowLogin(false);
+                    }}
+                />
+            </form>
+        </div>
+    );
+};
 
-            <button className='bg-blue-600 w-full text-white py-2 rounded-full'>{state === 'Login' ? 'Login' : 'Create account'}</button>
-            
-
-            {
-                state==='Login' ?  <p className='mt-5 text-center'>Don't have an account? <span className='text-blue-600 cursor-pointer' onClick={()=>{setState('Signup')}}>Sign up</span></p>
-                :
-
-                <p className='mt-5 text-center'>Already have an account? <span className='text-blue-600 cursor-pointer' onClick={()=>{setState('Login')}}>Login</span></p>
-            }
-
-
-            <img src={assets.cross_icon} alt="" className='absolute top-5 right-5 cursor-pointer' onClick={()=>{setShowLogin(false)}}/>
-        </form>
-    </div>
-  )
-}
-
-export default Login
+export default Login;

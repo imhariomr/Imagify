@@ -24,7 +24,7 @@ const registerUser = async(req,res)=>{
         res.json({success:true,token,name:user.name});
     }catch(error){
         console.log(error);
-        res.json({success:false,msg:error.message})
+        res.json({success:false,msg:"User Already Exist"})
     }
 }
 

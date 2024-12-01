@@ -15,7 +15,6 @@ const userAuth = async(req,res,next)=>{
         }else{
             return res.json({success:false,message : "Failed to Login Try Again"});
         }
-
         next();
     }catch(error){
         return res.json({success:false, message:"error.message"});
